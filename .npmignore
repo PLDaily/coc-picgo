@@ -1,0 +1,12 @@
+lib
+node_modules/
+sconfig.json
+*.map
+.tags
+.DS_Store
+webpack.config.js
+yarn.lock
+yarn-error.log
+.github
+.eslintrc.js
+.prettierrc

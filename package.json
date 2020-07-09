@@ -1,0 +1,270 @@
+{
+  "name": "coc-picgo",
+  "version": "1.0.0",
+  "description": "PicGo extension for coc.nvim, forked from vs-picgo",
+  "author": "PLDaily <pcd12321@gmail.com>",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "keywords": [
+    "coc.nvim",
+    "vim",
+    "picgo"
+  ],
+  "engines": {
+    "coc": "^0.0.70"
+  },
+  "scripts": {
+    "clean": "rimraf lib",
+    "watch": "webpack --watch",
+    "build": "webpack",
+    "lint": "tslint -c tslint.json -p tsconfig.json --fix",
+    "prepare": "npm-run-all clean build"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.13",
+    "coc.nvim": "^0.0.77",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
+    "ts-loader": "^7.0.5",
+    "tslint": "^6.1.2",
+    "tslint-plugin-prettier": "^2.3.0",
+    "typescript": "^3.9.5",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "coc-test configuration",
+      "properties": {
+        "picgo.configPath": {
+          "type": "string",
+          "markdownDescription": "%config.configPath.description%",
+          "default": ""
+        },
+        "picgo.dataPath": {
+          "type": "string",
+          "markdownDescription": "%config.dataPath.description%",
+          "default": ""
+        },
+        "picgo.customUploadName": {
+          "type": "string",
+          "markdownDescription": "%config.customUploadName.description%",
+          "default": "${fileName}${extName}"
+        },
+        "picgo.customOutputFormat": {
+          "type": "string",
+          "markdownDescription": "%config.customOutputFormat.description%",
+          "default": "![${uploadedName}](${url})"
+        },
+        "picgo.picBed.current": {
+          "type": "string",
+          "enum": [
+            "smms",
+            "aliyun",
+            "github",
+            "imgur",
+            "qiniu",
+            "tcyun",
+            "upyun",
+            "weibo"
+          ],
+          "default": "smms",
+          "markdownDescription": "%config.picBed.description%"
+        },
+        "picgo.picBed.smms.token": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.aliyun.accessKeyId": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.aliyun.accessKeySecret": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.aliyun.bucket": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.aliyun.area": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.aliyun.path": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.aliyun.customUrl": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.github.repo": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "%config.picBed.github.repo.description%"
+        },
+        "picgo.picBed.github.token": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.github.path": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.github.customUrl": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.github.branch": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.imgur.clientId": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.imgur.proxy": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.qiniu.accessKey": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.qiniu.secretKey": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.qiniu.bucket": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.qiniu.url": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.qiniu.area": {
+          "type": "string",
+          "enum": [
+            "z0",
+            "z1",
+            "z2",
+            "na0",
+            "as0"
+          ],
+          "default": "z0"
+        },
+        "picgo.picBed.qiniu.options": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.qiniu.path": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.tcyun.version": {
+          "type": "string",
+          "enum": [
+            "v4",
+            "v5"
+          ],
+          "default": "v5"
+        },
+        "picgo.picBed.tcyun.secretId": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.tcyun.secretKey": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.tcyun.bucket": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.tcyun.appId": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.tcyun.area": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.tcyun.path": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.tcyun.customUrl": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.upyun.bucket": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.upyun.operator": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.upyun.password": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.upyun.options": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.upyun.path": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.upyun.url": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.weibo.chooseCookie": {
+          "type": "boolean",
+          "default": true
+        },
+        "picgo.picBed.weibo.username": {
+          "type": "string",
+          "default": ""
+        },
+        "picgo.picBed.weibo.quality": {
+          "type": "string",
+          "enum": [
+            "thumbnail",
+            "mw690",
+            "large"
+          ],
+          "default": "large"
+        },
+        "picgo.picBed.weibo.cookie": {
+          "type": "string",
+          "default": ""
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "picgo.uploadImageFromClipboard",
+        "title": "picgo.uploadImageFromClipboard"
+      },
+      {
+        "command": "picgo.uploadImageFromInputBox",
+        "title": "picgo.uploadImageFromInputBox"
+      }
+    ]
+  },
+  "dependencies": {
+    "lodash": "^4.17.19",
+    "lodash-id": "^0.14.0",
+    "picgo": "^1.4.10"
+  }
+}
