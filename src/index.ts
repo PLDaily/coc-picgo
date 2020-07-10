@@ -33,7 +33,6 @@ async function uploadImageFromInputBox(
     result = path.isAbsolute(result)
       ? result
       : path.join(Uri.parse(doc.uri).fsPath, '../', result);
-    workspace.showMessage(result);
     if (fs.existsSync(result)) {
       return vspicgo.upload([result]);
     } else {
@@ -51,7 +50,6 @@ class ReactRefactorCodeActionProvider implements CodeActionProvider {
   ): Promise<Command[]> {
     const codeActions: Command[] = [];
     const selectedText = document.getText(range);
-    workspace.showMessage(selectedText);
     if (selectedText) {
       codeActions.push({
         command: 'picgo.uploadImageFromClipboard',

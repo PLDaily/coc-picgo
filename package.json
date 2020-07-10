@@ -1,6 +1,6 @@
 {
   "name": "coc-picgo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "PicGo extension for coc.nvim, forked from vs-picgo",
   "author": "PLDaily <pcd12321@gmail.com>",
   "license": "MIT",
