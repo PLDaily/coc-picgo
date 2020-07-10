@@ -39,7 +39,7 @@
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "coc-test configuration",
+      "title": "coc-picgo configuration",
       "properties": {
         "picgo.configPath": {
           "type": "string",

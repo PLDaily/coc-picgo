@@ -1,22 +1,22 @@
-import { Uri, workspace } from "coc.nvim";
-import { EventEmitter } from "events";
-import * as fs from "fs";
-import * as os from "os";
-import * as path from "path";
-import PicGo from "picgo";
-import { IImgInfo, IPlugin } from "picgo/dist/src/utils/interfaces";
-import { promisify } from "util";
-import { TextEdit } from "vscode-languageserver-protocol";
+import { Uri, workspace } from 'coc.nvim';
+import { EventEmitter } from 'events';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
+import PicGo from 'picgo';
+import { IImgInfo, IPlugin } from 'picgo/dist/src/utils/interfaces';
+import { promisify } from 'util';
+import { TextEdit } from 'vscode-languageserver-protocol';
 import {
   formatParam,
   formatString,
   getUploadedName,
   showError,
   showInfo,
-} from "./utils";
+} from './utils';
 
-const _ = require("lodash");
-const _db = require("lodash-id");
+const _ = require('lodash');
+const _db = require('lodash-id');
 _.mixin(_db);
 
 const writeFileP = promisify(fs.writeFile);
@@ -44,12 +44,12 @@ export interface IOutputUrl {
 }
 
 export enum EVSPicgoHooks {
-  updated = "updated",
+  updated = 'updated',
 }
 
 export default class VSPicgo extends EventEmitter {
   private static picgo: PicGo = new PicGo();
-  public mode: string = "v";
+  public mode: string = 'v';
 
   constructor() {
     super();
@@ -61,28 +61,28 @@ export default class VSPicgo extends EventEmitter {
   }
 
   configPicgo() {
-    let config = workspace.getConfiguration("picgo");
-    const picgoConfigPath = config.get<string>("configPath");
+    let config = workspace.getConfiguration('picgo');
+    const picgoConfigPath = config.get<string>('configPath');
     if (picgoConfigPath) {
       VSPicgo.picgo.setConfig(
         JSON.parse(
           fs.readFileSync(picgoConfigPath, {
-            encoding: "utf-8",
-          })
-        )
+            encoding: 'utf-8',
+          }),
+        ),
       );
     } else {
-      const picBed = config.get("picBed");
+      const picBed = config.get('picBed');
       VSPicgo.picgo.setConfig({ picBed });
     }
   }
 
   addGenerateOutputListener() {
-    VSPicgo.picgo.on("finished", async (ctx: PicGo) => {
-      let urlText = "";
+    VSPicgo.picgo.on('finished', async (ctx: PicGo) => {
+      let urlText = '';
       const outputFormatTemplate =
-        workspace.getConfiguration("picgo").get<string>("customOutputFormat") ||
-        "![${uploadedName}](${url})";
+        workspace.getConfiguration('picgo').get<string>('customOutputFormat') ||
+        '![${uploadedName}](${url})';
       try {
         urlText = ctx.output.reduce(
           (acc: string, imgInfo: IImgInfo): string => {
@@ -91,7 +91,7 @@ export default class VSPicgo extends EventEmitter {
               url: imgInfo.imgUrl,
             })}\n`;
           },
-          ""
+          '',
         );
         urlText = urlText.trim();
         await this.updateData(ctx.output);
@@ -99,11 +99,11 @@ export default class VSPicgo extends EventEmitter {
         if (err instanceof SyntaxError) {
           showError(
             `the data file ${this.dataPath} has syntax error, ` +
-              `please fix the error by yourself or delete the data file and vs-picgo will recreate for you.`
+              `please fix the error by yourself or delete the data file and vs-picgo will recreate for you.`,
           );
         } else {
           showError(
-            `failed to read from data file ${this.dataPath}: ${err || ""}`
+            `failed to read from data file ${this.dataPath}: ${err || ''}`,
           );
         }
         return;
@@ -115,7 +115,7 @@ export default class VSPicgo extends EventEmitter {
         const position = await workspace.getCursorPosition();
         edits = [TextEdit.insert(position, urlText)];
       } else {
-        const mode = await workspace.nvim.call("mode");
+        const mode = await workspace.nvim.call('mode');
         const range = await workspace.getSelectedRange(mode, doc);
         if (!range) return;
         edits = [TextEdit.replace(range, urlText)];
@@ -130,33 +130,33 @@ export default class VSPicgo extends EventEmitter {
     let beforeUploadPlugin: IPlugin = {
       handle: async (ctx: PicGo) => {
         const uploadNameTemplate =
-          workspace.getConfiguration("picgo").get<string>("customUploadName") ||
-          "${fileName}";
+          workspace.getConfiguration('picgo').get<string>('customUploadName') ||
+          '${fileName}';
         if (ctx.output.length === 1) {
           ctx.output[0].fileName = await this.changeFilename(
-            ctx.output[0].fileName || "",
+            ctx.output[0].fileName || '',
             uploadNameTemplate,
-            undefined
+            undefined,
           );
         } else {
           for (let index = 0; index < ctx.output.length; index++) {
             ctx.output[index].fileName = await this.changeFilename(
-              ctx.output[index].filename || "",
+              ctx.output[index].filename || '',
               uploadNameTemplate,
-              index
+              index,
             );
           }
         }
       },
     };
-    if (VSPicgo.picgo.helper.beforeUploadPlugins.get("vsPicgoRenamePlugin")) {
+    if (VSPicgo.picgo.helper.beforeUploadPlugins.get('vsPicgoRenamePlugin')) {
       VSPicgo.picgo.helper.beforeUploadPlugins.unregister(
-        "vsPicgoRenamePlugin"
+        'vsPicgoRenamePlugin',
       );
     }
     VSPicgo.picgo.helper.beforeUploadPlugins.register(
-      "vsPicgoRenamePlugin",
-      beforeUploadPlugin
+      'vsPicgoRenamePlugin',
+      beforeUploadPlugin,
     );
   }
 
@@ -168,23 +168,23 @@ export default class VSPicgo extends EventEmitter {
   async changeFilename(
     original: string,
     template: string,
-    index: number | undefined
+    index: number | undefined,
   ) {
     const doc = await workspace.document;
     if (!doc) return;
     let selectedString: string;
     if (!this.mode) {
-      selectedString = "";
+      selectedString = '';
     } else {
-      const m = await workspace.nvim.call("visualmode");
+      const m = await workspace.nvim.call('visualmode');
       const range = await workspace.getSelectedRange(m, doc);
       if (!range) return;
       selectedString = doc.textDocument.getText(range);
     }
     const nameReg = /[:\/\?\$]+/g; // limitations of name
-    const userDefineName = selectedString.replace(nameReg, () => "");
+    const userDefineName = selectedString.replace(nameReg, () => '');
     if (userDefineName) {
-      original = userDefineName + (index || "") + path.extname(original);
+      original = userDefineName + (index || '') + path.extname(original);
     }
     const mdFilePath = Uri.parse(doc.uri).fsPath;
     const mdFileName = path.basename(mdFilePath, path.extname(mdFilePath));
@@ -193,9 +193,9 @@ export default class VSPicgo extends EventEmitter {
   }
 
   get dataPath(): string {
-    const picgoConfig = workspace.getConfiguration("picgo");
+    const picgoConfig = workspace.getConfiguration('picgo');
     return (
-      picgoConfig.dataPath || path.resolve(os.homedir(), "vs-picgo-data.json")
+      picgoConfig.dataPath || path.resolve(os.homedir(), 'vs-picgo-data.json')
     );
   }
 
@@ -204,7 +204,7 @@ export default class VSPicgo extends EventEmitter {
       await writeFileP(
         dataPath,
         JSON.stringify({ uploaded: [] }, null, 2),
-        "utf8"
+        'utf8',
       );
     }
   }
@@ -214,13 +214,13 @@ export default class VSPicgo extends EventEmitter {
     this.configPicgo();
 
     // uploading progress
-    VSPicgo.picgo.on("uploadProgress", (p: number) => {
+    VSPicgo.picgo.on('uploadProgress', (p: number) => {
       showInfo(`image uploading ${p}% ...`);
     });
-    VSPicgo.picgo.on("notification", (notice: INotice) => {
-      showError(`${notice.title}! ${notice.body || ""}${notice.text || ""}`);
+    VSPicgo.picgo.on('notification', (notice: INotice) => {
+      showError(`${notice.title}! ${notice.body || ''}${notice.text || ''}`);
     });
-    VSPicgo.picgo.on("failed", () => {
+    VSPicgo.picgo.on('failed', () => {
       showError(`image upload failed`);
     });
 
@@ -231,16 +231,16 @@ export default class VSPicgo extends EventEmitter {
     const dataPath = this.dataPath;
     if (!fs.existsSync(dataPath)) {
       await this.initDataFile(dataPath);
-      showInfo("data file created at ${dataPath}.");
+      showInfo('data file created at ${dataPath}.');
     }
-    const dataRaw = await readFileP(dataPath, "utf8");
+    const dataRaw = await readFileP(dataPath, 'utf8');
     const data = JSON.parse(dataRaw);
     if (!data.uploaded) {
       data.uploaded = [];
     }
-    picInfos.forEach((picInfo) => {
-      _.insert(data["uploaded"], picInfo);
+    picInfos.forEach(picInfo => {
+      _.insert(data['uploaded'], picInfo);
     });
-    await writeFileP(dataPath, JSON.stringify(data, null, 2), "utf8");
+    await writeFileP(dataPath, JSON.stringify(data, null, 2), 'utf8');
   }
 }

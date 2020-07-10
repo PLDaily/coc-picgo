@@ -1,7 +1,7 @@
-import { workspace } from "coc.nvim";
-import * as path from "path";
-import { IImgInfo } from "picgo/dist/src/utils/interfaces";
-import { IOutputUrl, IUploadName } from "./picgo";
+import { workspace } from 'coc.nvim';
+import * as path from 'path';
+import { IImgInfo } from 'picgo/dist/src/utils/interfaces';
+import { IOutputUrl, IUploadName } from './picgo';
 
 export function formatParam(file: string, mdFileName: string): IUploadName {
   const dt = new Date();
@@ -13,7 +13,7 @@ export function formatParam(file: string, mdFileName: string): IUploadName {
   const s = dt.getSeconds();
 
   let pad = function (x: number) {
-    return ("00" + x).slice(-2);
+    return ('00' + x).slice(-2);
   };
 
   const date = `${y}-${pad(m)}-${pad(d)}`;
@@ -30,38 +30,38 @@ export function formatParam(file: string, mdFileName: string): IUploadName {
 
 export function formatString(
   tplString: string,
-  data: IUploadName | IOutputUrl
+  data: IUploadName | IOutputUrl,
 ) {
   const keys = Object.keys(data);
-  const values = keys.map((k) => data[k]);
-  return new Function(keys.join(","), "return `" + tplString + "`").apply(
+  const values = keys.map(k => data[k]);
+  return new Function(keys.join(','), 'return `' + tplString + '`').apply(
     null,
-    values
+    values,
   );
 }
 
-import nls = require("../package.nls.json");
+import nls = require('../package.nls.json');
 
 function addPeriod(messgae: string) {
-  if (!messgae.endsWith(".") && !messgae.endsWith("!")) {
-    messgae = messgae + ".";
+  if (!messgae.endsWith('.') && !messgae.endsWith('!')) {
+    messgae = messgae + '.';
   }
   return messgae;
 }
 
 export function showWarning(messgae: string) {
   messgae = addPeriod(messgae);
-  workspace.showMessage(`${nls["ext.displayName"]}: ${messgae}`);
+  workspace.showMessage(`${nls['ext.displayName']}: ${messgae}`);
 }
 
 export function showError(messgae: string) {
   messgae = addPeriod(messgae);
-  workspace.showMessage(`${nls["ext.displayName"]}: ${messgae}`);
+  workspace.showMessage(`${nls['ext.displayName']}: ${messgae}`);
 }
 
 export function showInfo(messgae: string) {
   messgae = addPeriod(messgae);
-  workspace.showMessage(`${nls["ext.displayName"]}: ${messgae}`);
+  workspace.showMessage(`${nls['ext.displayName']}: ${messgae}`);
 }
 
 /**
@@ -72,7 +72,7 @@ export function showInfo(messgae: string) {
 export function getUploadedName(imgInfo: IImgInfo): string {
   let fullName;
   if (!imgInfo.fileName) {
-    fullName = "";
+    fullName = '';
   } else {
     fullName = imgInfo.fileName as string;
   }
