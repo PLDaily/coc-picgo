@@ -1,4 +1,6 @@
 lib
+images/
+src/
 node_modules/
 sconfig.json
 *.map
